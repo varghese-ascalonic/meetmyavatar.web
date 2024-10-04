@@ -6,8 +6,9 @@ export default {
     namespaced: true,
     state: () => ({
         user: {
-            email: '', // You can add more default properties if needed
+            email: '',
         },
+        validationErrors: {} // New state to track form validation errors
     }),
     mutations: {
         setUser(state, user) {
@@ -16,6 +17,12 @@ export default {
         setUserExists(state, exists) {
             state.userExists = exists;
         },
+        setValidationErrors(state, errors) {
+            state.validationErrors = errors;
+        },
+        clearValidationErrors(state) {
+            state.validationErrors = {};
+        }
     },
     actions: {
         async checkUserExists({ commit }, email) {
@@ -36,9 +43,21 @@ export default {
             }
         },
         async createAccount({ commit }, { email, password }) {
-            // Handle account creation logic here
-            commit('setUser', { email, password });
-            // Additional logic like storing tokens can be implemented here
+            try {
+                commit('clearValidationErrors');
+                await axios.post(`${apiConfig.BASE_URL}/Auth/create-user`, {
+                    email,
+                    password,
+                    authType: 'PASSWORD'
+                });
+                commit('setUser', { email });
+            } catch (error) {
+                if (error.response && error.response.status === 400) {
+                    commit('setValidationErrors', error.response.data.errors);
+                } else {
+                    console.error('Error creating account:', error);
+                }
+            }
         },
         async login({ commit }, { email, password }) {
             // Handle login logic here (e.g., verify email/password)
@@ -49,5 +68,6 @@ export default {
     getters: {
         user: (state) => state.user,
         userExists: (state) => state.userExists,
+        validationErrors: (state) => state.validationErrors,
     },
 };

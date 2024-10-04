@@ -1,15 +1,14 @@
 <template>
-  <authenticate-component></authenticate-component>
+  <router-view></router-view>
 </template>
 
 <script>
 
-import AuthenticateComponent from './components/AuthenticateComponent.vue'
 
 export default {
   name: "MeetMyAvatar",
   components: {
-    AuthenticateComponent
+    
   }
 };
 </script>

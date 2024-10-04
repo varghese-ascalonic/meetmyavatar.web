@@ -1,5 +1,5 @@
 const API_CONFIG = {
-    LOCAL: "https://localhost:32769",
+    LOCAL: "https://localhost:32775",
     REMOTE: "https://meetmyavatar-dya3d4avdpbbf3ak.westeurope-01.azurewebsites.net",
 };
 
