@@ -1,6 +1,6 @@
 // src/router/index.js
 
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import AuthenticateComponent from './components/AuthenticateComponent.vue';
 import HelloWorld from './components/HelloWorld.vue';
 
@@ -19,7 +19,7 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(), // Use the browser's history mode (no hash in the URL)
+    history: createWebHashHistory(), // Switch to hash mode (uses # in the URL)
     routes
 });
 
