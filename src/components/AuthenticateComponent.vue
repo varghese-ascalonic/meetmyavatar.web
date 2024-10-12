@@ -117,10 +117,10 @@ export default {
                     await this.checkUserExists(this.userEmailModel);
                     this.setFlow(this.userExists ? 'LOGIN' : 'SIGNUP');
                 } else if (this.flow === 'SIGNUP') {
-                    this.createAccount({ email: this.userEmailModel, password: this.password });
+                    this.createAccount({ email: this.userEmailModel, password: this.password, router: this.$router });
                     this.setFlow('DEFAULT');
                 } else if (this.flow === 'LOGIN') {
-                    this.login({ email: this.userEmailModel, password: this.password });
+                    this.login({ email: this.userEmailModel, password: this.password, router: this.$router });
                     this.setFlow('DEFAULT');
                 }
             }
