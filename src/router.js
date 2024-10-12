@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import AuthenticateComponent from './components/AuthenticateComponent.vue';
 import HelloWorld from './components/HelloWorld.vue';
-import MessengerComponent from './components/MessengerComponent.vue';
+import MessengerLayout from './components/MessengerLayout.vue';
 
 const routes = [
     {
@@ -18,7 +18,7 @@ const routes = [
     {
         path: '/messages',
         name: 'Messenger',
-        component: MessengerComponent,
+        component: MessengerLayout,
         meta: { requiresAuth: true } // Mark this route as protected
     },
     // Add more routes here as needed
