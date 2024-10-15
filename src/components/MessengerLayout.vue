@@ -6,7 +6,7 @@
         </div>
 
         <!-- Conversation List for mobile screens (full screen) -->
-        <div v-if="showConversationListOnMobile" class="block lg:hidden h-full w-full bg-gray-900">
+        <div v-if="!selectedConversation" class="block lg:hidden h-full w-full bg-gray-900">
             <ConversationList :conversations="conversations" :selectConversation="handleConversationSelection" />
         </div>
 
