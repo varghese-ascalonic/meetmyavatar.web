@@ -38,7 +38,7 @@
                         rows="1" placeholder="Type a message..." />
                 </div>
                 <div class="flex-2 p-1 flex items-center justify-center">
-                    <button @click="sendMessage"
+                    <button @click="handleSendMessage"
                         class="bg-blue-600 w-12 h-12 rounded-full inline-block flex items-center justify-center hover:bg-blue-500 transition-all">
                         <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                             stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6 text-white">
@@ -63,19 +63,36 @@ export default {
     },
     computed: {
         ...mapState('messenger', ['messages', 'user']),
+        ...mapState('auth', ['user']), 
+        ...mapState('conversation', ['selectedConversation'])
     },
     methods: {
-        ...mapActions('messenger', ['sendMessage', 'fetchMessages']),
-        sendMessage() {
+        ...mapActions('messenger', ['sendMessage', 'loadMessages', 'initializeSignalR']),
+
+        // Renamed method to avoid recursion
+        handleSendMessage() {
             if (this.messageContent.trim()) {
-                this.sendMessage({ content: this.messageContent });
-                this.messageContent = ''; // Clear input
+
+                const senderAvatarId = this.user.userAccessMap.avatarAccessList[0]?.avatarId; // First avatarId
+                const recipientAvatarId = this.selectedConversation?.avatarId; 
+
+                const messagePayload = {
+                    content: this.messageContent,
+                    senderAvatarId: senderAvatarId,  // Assuming you have the sender's avatarId in the user state
+                    recipientAvatarId: recipientAvatarId  // Assuming the recipient's avatarId is selected
+                };
+                this.sendMessage(messagePayload).then(() => {
+                    this.scrollToBottom(); // Scroll to the bottom after sending the message
+                });// Dispatch to Vuex action
+                this.messageContent = '';  // Clear input
             }
         },
+
         formatDate(date) {
             const options = { hour: '2-digit', minute: '2-digit' };
             return new Date(date).toLocaleTimeString(undefined, options);
         },
+
         scrollToBottom() {
             this.$nextTick(() => {
                 const container = this.$refs.messagesContainer;
@@ -85,12 +102,21 @@ export default {
     },
     watch: {
         messages() {
+            console.log("try to scroll")
             this.scrollToBottom();
         },
     },
     mounted() {
-        this.fetchMessages(); // Initial fetch of messages
-        this.scrollToBottom(); // Scroll on initial render
+        this.initializeSignalR().then(() => {
+            if(this.selectedConversation.id !== 0) {
+                this.loadMessages(this.selectedConversation.id);  
+            }
+            else {
+                console.log(this.user.userAccessMap.avatarAccessList[0]?.avatarId);
+                //this.loadMessages(this.selectedConversation.id);
+            }
+        });
+        this.scrollToBottom();
     },
 };
 </script>

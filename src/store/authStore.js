@@ -1,4 +1,4 @@
-import apiClient from '../axios/api'; 
+import apiClient from '../axios/api';
 
 export default {
     namespaced: true,
@@ -56,6 +56,30 @@ export default {
                 } else {
                     console.error('Error checking if user exists:', error);
                 }
+            }
+        },
+        async fetchUserInfo({ commit }) {
+            try {
+                const token = localStorage.getItem('authToken');
+
+                if (!token) {
+                    throw new Error('No token found');
+                }
+
+                const response = await apiClient.post(`/Auth/user-info`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${token}` // Set the Authorization header with the Bearer token
+                    }
+                });
+
+                const { id, email, userAccessMap } = response.data;
+
+                commit('setUser', { id, email });
+                commit('setUserAccessMap', userAccessMap);
+
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+                throw error;
             }
         },
         async createAccount({ commit }, { email, password }) {
