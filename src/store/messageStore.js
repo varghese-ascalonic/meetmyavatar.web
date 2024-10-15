@@ -27,6 +27,7 @@ export default {
                 // Create the SignalR connection using dynamic base URL from Axios config
                 const connection = new HubConnectionBuilder()
                     .withUrl(`${apiClient.defaults.baseURL}/chat?access_token=${token}`) // Use the baseURL from axios client
+                    .withAutomaticReconnect([0, 2000, 10000, 30000])
                     .build();
 
                 // Handle receiving messages
