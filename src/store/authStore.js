@@ -82,15 +82,24 @@ export default {
                 throw error;
             }
         },
-        async createAccount({ commit }, { email, password }) {
+        async createAccount({ commit }, { email, password, router }) {
             try {
                 commit('clearValidationErrors');
-                await apiClient.post(`/Auth/create-user`, {
+                const response = await apiClient.post(`/Auth/create-user`, {
                     email,
                     password,
                     authType: 'PASSWORD'
                 });
-                commit('setUser', { email });
+                // Store user details and auth token
+                const { id, email: userEmail, authToken, userAccessMap } = response.data;
+
+                commit('setUser', { id, email: userEmail });
+                commit('setAuthToken', authToken); // Store JWT token
+                commit('setUserAccessMap', userAccessMap); // Store access map with avatar permissions
+
+                localStorage.setItem('authToken', authToken);
+
+                router.push('/messages');
             } catch (error) {
                 if (error.response && error.response.status === 400) {
                     commit('setValidationErrors', error.response.data.errors);
@@ -124,6 +133,38 @@ export default {
                 } else {
                     console.error('Error during login:', error);
                 }
+            }
+        },
+        async getGoogleLoginUrl() {
+            try {
+                const response = await apiClient.get('/Auth/google-login-url'); 
+                return response.data.url; 
+            } catch (error) {
+                console.error('Error fetching Google login URL:', error);
+                throw error;
+            }
+        },
+        async handleGoogleCallback({ commit }, { code, router }) {
+            console.log(code);
+            try {
+                const response = await apiClient.post(`/Auth/google-token-exchange`, { code : code }, {
+                    headers: {
+                        "Content-Type": "application/json", // Ensure the content type is JSON
+                    },
+                });
+
+                const { authToken, id, email, userAccessMap } = response.data;
+
+                commit('setUser', { id, email });
+                commit('setAuthToken', authToken);
+                commit('setUserAccessMap', userAccessMap);
+
+                localStorage.setItem('authToken', authToken);
+
+                // Redirect to dashboard or messages
+                router.push('/messages');
+            } catch (error) {
+                console.error('Error handling Google callback:', error);
             }
         },
         logout({ commit }) {

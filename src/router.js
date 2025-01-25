@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router';
 import AuthenticateComponent from './components/AuthenticateComponent.vue';
 import HelloWorld from './components/HelloWorld.vue';
 import MessengerLayout from './components/MessengerLayout.vue';
+import LoginSuccess from './components/LoginSuccess.vue';
 
 const routes = [
     {
@@ -21,6 +22,11 @@ const routes = [
         component: MessengerLayout,
         meta: { requiresAuth: true } // Mark this route as protected
     },
+    {
+        path: '/login-success',
+        name: 'LoginSuccess',
+        component: LoginSuccess
+    }
     // Add more routes here as needed
 ];
 

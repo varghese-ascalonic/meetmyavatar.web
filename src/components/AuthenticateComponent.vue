@@ -104,7 +104,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions('auth', ['checkUserExists', 'createAccount', 'login']),
+        ...mapActions('auth', ['checkUserExists', 'createAccount', 'login', 'getGoogleLoginUrl']), 
         ...mapMutations('auth', {
             updateUser: 'setUser'
         }),
@@ -158,9 +158,18 @@ export default {
         resetConfirmPasswordValidations() {
             this.confirmPasswordValidation.hasError = false;
         },
-        onGoogleLoginClicked() {
-            console.log('Google login clicked - functionality not implemented yet.');
-        }
+        async onGoogleLoginClicked() {
+            try {
+                // Fetch the Google login URL from the backend
+                const googleLoginUrl = await this.getGoogleLoginUrl();
+
+                // Redirect the user to the Google login page
+                window.location.href = googleLoginUrl;
+            } catch (error) {
+                console.error('Failed to redirect to Google login:', error);
+                alert('An error occurred while trying to log in with Google. Please try again.');
+            }
+        },
     }
 }
 </script>
