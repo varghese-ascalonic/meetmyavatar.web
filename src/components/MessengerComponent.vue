@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-col bg-gray-900 text-white" :style="{ height: '100%' }">
-        <!-- Navbar (Sticky Header) -->
-        <header class="bg-gray-800 p-4 shadow shrink-0">
+    <div class="messenger flex flex-col">
+        <!-- Navbar (Fixed Header) -->
+        <header class="header bg-gray-800 p-4 shadow">
             <div class="flex items-center">
                 <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
                     alt="User avatar" />
@@ -12,7 +12,7 @@
         </header>
 
         <!-- Messages Container (Scrollable) -->
-        <main class="flex-1 overflow-y-auto p-4" ref="messagesContainer">
+        <main class="messages flex-1 overflow-y-auto p-4" ref="messagesContainer">
             <div>
                 <div v-for="message in messages" :key="message.id" class="mb-4 flex"
                     :class="{ 'text-right': message.sentFromUser }">
@@ -29,17 +29,17 @@
             </div>
         </main>
 
-        <!-- Textbox and Send Button (Sticky Footer) -->
-        <footer class="bg-gray-800 p-2 shrink-0">
+        <!-- Textbox and Send Button (Fixed Footer) -->
+        <footer class="footer bg-gray-800 p-2">
             <div class="write bg-gray-700 shadow flex rounded-full items-center px-3">
                 <div class="flex-1">
                     <textarea v-model="messageContent"
-                        class="w-full block outline-none py-3 px-4 bg-transparent text-white placeholder-gray-400 resize-none"
-                        rows="1" placeholder="Type a message..." @focus="handleFocus"></textarea>
+                        class="textarea w-full block outline-none py-3 px-4 bg-transparent text-white placeholder-gray-400 resize-none"
+                        rows="1" placeholder="Type a message..."></textarea>
                 </div>
                 <div class="flex-2 p-1 flex items-center justify-center">
                     <button @click="handleSendMessage"
-                        class="bg-blue-600 w-12 h-12 rounded-full inline-block flex items-center justify-center hover:bg-blue-500 transition-all">
+                        class="send-button bg-blue-600 w-12 h-12 rounded-full inline-block flex items-center justify-center hover:bg-blue-500 transition-all">
                         <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                             stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6 text-white">
                             <path d="M5 13l4 4L19 7"></path>
@@ -98,11 +98,6 @@ export default {
                 container.scrollTop = container.scrollHeight;
             });
         },
-
-        handleFocus() {
-            // On mobile, ensure the footer adjusts properly when keyboard appears
-            this.scrollToBottom();
-        },
     },
     watch: {
         messages() {
@@ -122,7 +117,7 @@ export default {
 
 
 <style scoped>
-/* Ensure full height layout */
+/* Ensure consistent height for the layout */
 html,
 body {
     margin: 0;
@@ -131,7 +126,41 @@ body {
     overflow: hidden;
 }
 
-textarea {
+.messenger {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Header (Sticky at the top) */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+/* Messages Container */
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 16px;
+    /* Prevent overlap with footer */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling for iOS */
+}
+
+/* Footer (Sticky at the bottom) */
+.footer {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    background-color: #1f2937;
+    flex-shrink: 0;
+    padding: 10px;
+}
+
+/* Textbox */
+.textarea {
     width: 100%;
     border: none;
     outline: none;
@@ -142,43 +171,20 @@ textarea {
     font-size: 16px;
 }
 
-.write {
-    display: flex;
-    align-items: center;
-    background-color: #1f2937;
-    border-radius: 50px;
-    padding-left: 15px;
+/* Send Button */
+.send-button {
+    background-color: #3b82f6;
+}
+
+.send-button:hover {
+    background-color: #2563eb;
+}
+
+.send-button:active {
+    background-color: #1d4ed8;
 }
 
 textarea::placeholder {
     color: #9ca3af;
-}
-
-button {
-    background-color: #3b82f6;
-}
-
-button:hover {
-    background-color: #2563eb;
-}
-
-button:active {
-    background-color: #1d4ed8;
-}
-
-/* Scrollable main container */
-main {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 16px;
-    -webkit-overflow-scrolling: touch;
-    /* Smooth scrolling on iOS */
-}
-
-footer {
-    background-color: #1f2937;
-    padding: 10px;
-    z-index: 10;
-    flex-shrink: 0;
 }
 </style>
