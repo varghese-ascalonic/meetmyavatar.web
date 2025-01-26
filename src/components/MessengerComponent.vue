@@ -144,6 +144,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     position: fixed;
     width: 100%;
+    z-index: 10;
 }
 
 /* Messages Container */
