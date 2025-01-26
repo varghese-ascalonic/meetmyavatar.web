@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-col h-screen bg-gray-900 text-white">
+    <div class="flex flex-col bg-gray-900 text-white" :style="{ height: '100%' }">
         <!-- Navbar (Sticky Header) -->
-        <header class="bg-gray-800 p-4 shadow">
+        <header class="bg-gray-800 p-4 shadow shrink-0">
             <div class="flex items-center">
                 <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
                     alt="User avatar" />
@@ -30,12 +30,12 @@
         </main>
 
         <!-- Textbox and Send Button (Sticky Footer) -->
-        <footer class="bg-gray-800 p-2">
+        <footer class="bg-gray-800 p-2 shrink-0">
             <div class="write bg-gray-700 shadow flex rounded-full items-center px-3">
                 <div class="flex-1">
                     <textarea v-model="messageContent"
                         class="w-full block outline-none py-3 px-4 bg-transparent text-white placeholder-gray-400 resize-none"
-                        rows="1" placeholder="Type a message..."></textarea>
+                        rows="1" placeholder="Type a message..." @focus="handleFocus"></textarea>
                 </div>
                 <div class="flex-2 p-1 flex items-center justify-center">
                     <button @click="handleSendMessage"
@@ -98,6 +98,11 @@ export default {
                 container.scrollTop = container.scrollHeight;
             });
         },
+
+        handleFocus() {
+            // On mobile, ensure the footer adjusts properly when keyboard appears
+            this.scrollToBottom();
+        },
     },
     watch: {
         messages() {
@@ -117,29 +122,13 @@ export default {
 
 
 <style scoped>
-/* Make sure html/body take full height */
+/* Ensure full height layout */
 html,
 body {
     margin: 0;
     padding: 0;
     height: 100%;
     overflow: hidden;
-}
-
-/* The main container */
-main {
-    flex: 1;
-    overflow-y: auto;
-    padding-bottom: 16px;
-    /* Avoid overlap with footer */
-    -webkit-overflow-scrolling: touch;
-    /* Smooth scrolling on iOS */
-}
-
-footer {
-    background-color: #1f2937;
-    padding: 10px;
-    z-index: 10;
 }
 
 textarea {
@@ -175,5 +164,21 @@ button:hover {
 
 button:active {
     background-color: #1d4ed8;
+}
+
+/* Scrollable main container */
+main {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling on iOS */
+}
+
+footer {
+    background-color: #1f2937;
+    padding: 10px;
+    z-index: 10;
+    flex-shrink: 0;
 }
 </style>
