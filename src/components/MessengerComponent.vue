@@ -153,6 +153,15 @@ body {
     overflow-y: auto;
     padding: 16px;
     -webkit-overflow-scrolling: touch;
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  /* Styles specific to touch devices */
+  .messages {
+    padding-bottom: 16px;
+  }
 }
 
 /* Prevent extra scrolling space */
