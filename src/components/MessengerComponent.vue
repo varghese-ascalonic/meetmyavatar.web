@@ -1,9 +1,8 @@
 <template>
-    <div class="flex flex-col min-h-screen bg-gray-900 text-white">
+    <div class="flex flex-col h-screen bg-gray-900 text-white">
         <!-- Navbar (Sticky Header) -->
-        <header class="bg-gray-800 p-4 shadow sticky top-0 z-10">
+        <header class="bg-gray-800 p-4 shadow">
             <div class="flex items-center">
-                <!-- User Info -->
                 <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
                     alt="User avatar" />
                 <div class="ml-3 text-base font-medium">
@@ -13,7 +12,7 @@
         </header>
 
         <!-- Messages Container (Scrollable) -->
-        <main class="flex-1 min-h-0 overflow-auto p-4" ref="messagesContainer">
+        <main class="flex-1 overflow-y-auto p-4" ref="messagesContainer">
             <div>
                 <div v-for="message in messages" :key="message.id" class="mb-4 flex"
                     :class="{ 'text-right': message.sentFromUser }">
@@ -23,9 +22,7 @@
                             <span>{{ message.content }}</span>
                         </div>
                         <div class="pl-4">
-                            <small class="text-gray-400">
-                                {{ formatDate(message.sentAt) }}
-                            </small>
+                            <small class="text-gray-400">{{ formatDate(message.sentAt) }}</small>
                         </div>
                     </div>
                 </div>
@@ -33,7 +30,7 @@
         </main>
 
         <!-- Textbox and Send Button (Sticky Footer) -->
-        <footer class="bg-gray-800 p-2 sticky bottom-0 z-10">
+        <footer class="bg-gray-800 p-2">
             <div class="write bg-gray-700 shadow flex rounded-full items-center px-3">
                 <div class="flex-1">
                     <textarea v-model="messageContent"
@@ -53,6 +50,7 @@
         </footer>
     </div>
 </template>
+
 
 <script>
 import { mapState, mapActions } from 'vuex';
@@ -110,8 +108,6 @@ export default {
         this.initializeSignalR().then(() => {
             if (this.selectedConversation.id !== 0) {
                 this.loadMessages(this.selectedConversation.id);
-            } else {
-                console.log(this.user.userAccessMap.avatarAccessList[0]?.avatarId);
             }
         });
         this.scrollToBottom();
@@ -119,13 +115,31 @@ export default {
 };
 </script>
 
+
 <style scoped>
-/* Make sure html/body can take full height in mobile: */
+/* Make sure html/body take full height */
 html,
 body {
     margin: 0;
     padding: 0;
     height: 100%;
+    overflow: hidden;
+}
+
+/* The main container */
+main {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 16px;
+    /* Avoid overlap with footer */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling on iOS */
+}
+
+footer {
+    background-color: #1f2937;
+    padding: 10px;
+    z-index: 10;
 }
 
 textarea {
