@@ -1,20 +1,21 @@
 <template>
-    <div class="flex flex-col h-screen bg-gray-900 text-white">
-        <!-- Navbar -->
-        <div class="flex items-center bg-gray-800 text-white p-4 shadow">
-            <!-- User Info -->
-            <img class="h-10 w-10 rounded-full"
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                alt="User avatar" />
-            <div class="ml-3">
-                <div class="text-base font-medium">{{ user.displayName }}</div>
+    <div class="flex flex-col min-h-screen bg-gray-900 text-white">
+        <!-- Navbar (Sticky Header) -->
+        <header class="bg-gray-800 p-4 shadow sticky top-0 z-10">
+            <div class="flex items-center">
+                <!-- User Info -->
+                <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
+                    alt="User avatar" />
+                <div class="ml-3 text-base font-medium">
+                    {{ user.displayName }}
+                </div>
             </div>
-        </div>
+        </header>
 
-        <!-- Messages Container -->
-        <div class="flex-grow overflow-auto p-4" ref="messagesContainer">
-            <div class="messages flex-1 overflow-auto">
-                <div v-for="message in messages" :key="message.id" class="message mb-4 flex"
+        <!-- Messages Container (Scrollable) -->
+        <main class="flex-1 min-h-0 overflow-auto p-4" ref="messagesContainer">
+            <div>
+                <div v-for="message in messages" :key="message.id" class="mb-4 flex"
                     :class="{ 'text-right': message.sentFromUser }">
                     <div class="flex-1 px-2">
                         <div :class="message.sentFromUser ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-200'"
@@ -22,20 +23,22 @@
                             <span>{{ message.content }}</span>
                         </div>
                         <div class="pl-4">
-                            <small class="text-gray-400">{{ formatDate(message.sentAt) }}</small>
+                            <small class="text-gray-400">
+                                {{ formatDate(message.sentAt) }}
+                            </small>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
 
-        <!-- Textbox and Send Button -->
-        <div class="flex-none px-4 py-2 bg-gray-800">
+        <!-- Textbox and Send Button (Sticky Footer) -->
+        <footer class="bg-gray-800 p-2 sticky bottom-0 z-10">
             <div class="write bg-gray-700 shadow flex rounded-full items-center px-3">
                 <div class="flex-1">
                     <textarea v-model="messageContent"
                         class="w-full block outline-none py-3 px-4 bg-transparent text-white placeholder-gray-400 resize-none"
-                        rows="1" placeholder="Type a message..." />
+                        rows="1" placeholder="Type a message..."></textarea>
                 </div>
                 <div class="flex-2 p-1 flex items-center justify-center">
                     <button @click="handleSendMessage"
@@ -47,7 +50,7 @@
                     </button>
                 </div>
             </div>
-        </div>
+        </footer>
     </div>
 </template>
 
@@ -62,29 +65,27 @@ export default {
         };
     },
     computed: {
-        ...mapState('messenger', ['messages', 'user']),
-        ...mapState('auth', ['user']), 
-        ...mapState('conversation', ['selectedConversation'])
+        ...mapState('messenger', ['messages']),
+        ...mapState('auth', ['user']),
+        ...mapState('conversation', ['selectedConversation']),
     },
     methods: {
         ...mapActions('messenger', ['sendMessage', 'loadMessages', 'initializeSignalR']),
 
-        // Renamed method to avoid recursion
         handleSendMessage() {
             if (this.messageContent.trim()) {
-
-                const senderAvatarId = this.user.userAccessMap.avatarAccessList[0]?.avatarId; // First avatarId
-                const recipientAvatarId = this.selectedConversation?.avatarId; 
+                const senderAvatarId = this.user.userAccessMap.avatarAccessList[0]?.avatarId;
+                const recipientAvatarId = this.selectedConversation?.avatarId;
 
                 const messagePayload = {
                     content: this.messageContent,
-                    senderAvatarId: senderAvatarId,  // Assuming you have the sender's avatarId in the user state
-                    recipientAvatarId: recipientAvatarId  // Assuming the recipient's avatarId is selected
+                    senderAvatarId,
+                    recipientAvatarId,
                 };
                 this.sendMessage(messagePayload).then(() => {
-                    this.scrollToBottom(); // Scroll to the bottom after sending the message
-                });// Dispatch to Vuex action
-                this.messageContent = '';  // Clear input
+                    this.scrollToBottom();
+                });
+                this.messageContent = '';
             }
         },
 
@@ -102,18 +103,15 @@ export default {
     },
     watch: {
         messages() {
-            console.log("try to scroll")
             this.scrollToBottom();
         },
     },
     mounted() {
         this.initializeSignalR().then(() => {
-            if(this.selectedConversation.id !== 0) {
-                this.loadMessages(this.selectedConversation.id);  
-            }
-            else {
+            if (this.selectedConversation.id !== 0) {
+                this.loadMessages(this.selectedConversation.id);
+            } else {
                 console.log(this.user.userAccessMap.avatarAccessList[0]?.avatarId);
-                //this.loadMessages(this.selectedConversation.id);
             }
         });
         this.scrollToBottom();
@@ -122,12 +120,14 @@ export default {
 </script>
 
 <style scoped>
-.message {
-    display: flex;
-    align-items: flex-start;
+/* Make sure html/body can take full height in mobile: */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
 
-/* Responsive styles for textarea */
 textarea {
     width: 100%;
     border: none;
