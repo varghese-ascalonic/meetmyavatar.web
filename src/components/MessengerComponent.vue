@@ -1,7 +1,7 @@
 <template>
-    <div class="messenger flex flex-col">
+    <div class="messenger">
         <!-- Navbar (Fixed Header) -->
-        <header class="header bg-gray-800 p-4 shadow">
+        <header class="header">
             <div class="flex items-center">
                 <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
                     alt="User avatar" />
@@ -12,7 +12,7 @@
         </header>
 
         <!-- Messages Container (Scrollable) -->
-        <main class="messages flex-1 overflow-y-auto p-4" ref="messagesContainer">
+        <main class="messages" ref="messagesContainer">
             <div>
                 <div v-for="message in messages" :key="message.id" class="mb-4 flex"
                     :class="{ 'text-right': message.sentFromUser }">
@@ -30,29 +30,23 @@
         </main>
 
         <!-- Textbox and Send Button (Fixed Footer) -->
-        <footer class="footer bg-gray-800 p-2">
-            <div class="write bg-gray-700 shadow flex rounded-full items-center px-3">
-                <div class="flex-1">
-                    <textarea v-model="messageContent"
-                        class="textarea w-full block outline-none py-3 px-4 bg-transparent text-white placeholder-gray-400 resize-none"
-                        rows="1" placeholder="Type a message..."></textarea>
-                </div>
-                <div class="flex-2 p-1 flex items-center justify-center">
-                    <button @click="handleSendMessage"
-                        class="send-button bg-blue-600 w-12 h-12 rounded-full inline-block flex items-center justify-center hover:bg-blue-500 transition-all">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6 text-white">
-                            <path d="M5 13l4 4L19 7"></path>
-                        </svg>
-                    </button>
-                </div>
+        <footer class="footer">
+            <div class="write">
+                <textarea v-model="messageContent" class="textarea" placeholder="Type a message..."></textarea>
+                <button @click="handleSendMessage" class="send-button">
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6">
+                        <path d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </button>
             </div>
         </footer>
     </div>
 </template>
 
 
-<script>
+
+<script scoped>
 import { mapState, mapActions } from 'vuex';
 
 export default {
@@ -98,6 +92,11 @@ export default {
                 container.scrollTop = container.scrollHeight;
             });
         },
+
+        updateViewportHeight() {
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        },
     },
     watch: {
         messages() {
@@ -105,6 +104,8 @@ export default {
         },
     },
     mounted() {
+        window.addEventListener('resize', this.updateViewportHeight);
+        this.updateViewportHeight();
         this.initializeSignalR().then(() => {
             if (this.selectedConversation.id !== 0) {
                 this.loadMessages(this.selectedConversation.id);
@@ -112,12 +113,15 @@ export default {
         });
         this.scrollToBottom();
     },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.updateViewportHeight);
+    },
 };
 </script>
 
 
 <style scoped>
-/* Ensure consistent height for the layout */
+/* Dynamic viewport height fix */
 html,
 body {
     margin: 0;
@@ -129,62 +133,60 @@ body {
 .messenger {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
 }
 
-/* Header (Sticky at the top) */
+/* Header */
 .header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    background-color: #1f2937;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Messages Container */
 .messages {
     flex: 1;
     overflow-y: auto;
-    padding-bottom: 16px;
-    /* Prevent overlap with footer */
+    padding: 16px;
     -webkit-overflow-scrolling: touch;
-    /* Smooth scrolling for iOS */
 }
 
-/* Footer (Sticky at the bottom) */
+/* Footer */
 .footer {
+    background-color: #1f2937;
+    padding: 8px;
     position: sticky;
     bottom: 0;
-    z-index: 10;
-    background-color: #1f2937;
-    flex-shrink: 0;
-    padding: 10px;
 }
 
-/* Textbox */
+/* Write Area */
+.write {
+    display: flex;
+    align-items: center;
+    background-color: #374151;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+/* Textarea */
 .textarea {
-    width: 100%;
+    flex: 1;
     border: none;
+    background: transparent;
+    color: white;
     outline: none;
     resize: none;
-    background-color: transparent;
-    color: white;
-    padding: 10px;
     font-size: 16px;
 }
 
 /* Send Button */
 .send-button {
-    background-color: #3b82f6;
-}
-
-.send-button:hover {
     background-color: #2563eb;
-}
-
-.send-button:active {
-    background-color: #1d4ed8;
-}
-
-textarea::placeholder {
-    color: #9ca3af;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
 }
 </style>
