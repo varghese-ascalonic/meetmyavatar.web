@@ -142,6 +142,8 @@ body {
     background-color: #1f2937;
     padding: 16px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    width: 100%;
 }
 
 /* Messages Container */
