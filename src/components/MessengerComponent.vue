@@ -152,12 +152,24 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
+/* Prevent extra scrolling space */
+.messages::after {
+    content: '';
+    display: block;
+    height: 0px;
+}
+
 /* Footer */
 .footer {
     background-color: #1f2937;
-    padding: 8px;
-    position: sticky;
+    position: fixed;
+    /* Always fixed at the bottom */
     bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    padding: 8px 16px;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Write Area */
@@ -178,6 +190,12 @@ body {
     outline: none;
     resize: none;
     font-size: 16px;
+    height: 32px;
+}
+
+/* Prevent overlap when keyboard appears */
+.textarea:focus {
+    outline: none;
 }
 
 /* Send Button */
@@ -189,5 +207,13 @@ body {
     align-items: center;
     justify-content: center;
     margin-left: 8px;
+}
+
+.send-button:hover {
+    background-color: #1d4ed8;
+}
+
+textarea::placeholder {
+    color: #9ca3af;
 }
 </style>
