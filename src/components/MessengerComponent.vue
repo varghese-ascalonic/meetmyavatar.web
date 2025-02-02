@@ -3,10 +3,10 @@
         <!-- Navbar (Fixed Header) -->
         <header class="header">
             <div class="flex items-center">
-                <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
+                <img class="h-10 w-10 rounded-full" :src="selectedConversation.avatarProfilePictureUrl"
                     alt="User avatar" />
-                <div class="ml-3 text-base font-medium">
-                    {{ user.displayName }}
+                <div class="ml-3 text-base font-medium text-white">
+                    {{ selectedConversation.avatarName }}
                 </div>
             </div>
         </header>
@@ -34,10 +34,7 @@
             <div class="write">
                 <textarea v-model="messageContent" class="textarea" placeholder="Type a message..."></textarea>
                 <button @click="handleSendMessage" class="send-button">
-                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="2" viewBox="0 0 24 24" class="w-6 h-6">
-                        <path d="M5 13l4 4L19 7"></path>
-                    </svg>
+                    <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/send-icon.svg" alt="Send" class="w-6 h-6" />
                 </button>
             </div>
         </footer>

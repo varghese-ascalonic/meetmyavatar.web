@@ -51,7 +51,7 @@
                 </button>
 
                 <button @click="onGoogleLoginClicked" style="margin-top: 10px;" class="block w-full rounded-md border border-red-600 px-3.5 py-2.5 text-center text-sm font-semibold text-red-600 shadow-sm hover:bg-red-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 flex items-center justify-center space-x-2">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="Google logo" width="20" height="20" class="mr-2" />
+                    <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/Google__G__logo.svg.png" alt="Google logo" width="20" height="20" class="mr-2" />
                     Continue with Google
                 </button>
             </div>

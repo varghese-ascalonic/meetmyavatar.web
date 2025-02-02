@@ -22,7 +22,7 @@
                 class="p-4 border-b border-gray-700 hover:bg-gray-700 cursor-pointer"
                 @click="selectConversation(conversation)">
                 <div class="flex items-center">
-                    <img class="h-10 w-10 rounded-full" :src="conversation.avatar" alt="User avatar" />
+                    <img class="h-10 w-10 rounded-full" :src="conversation.avatarProfilePictureUrl" alt="User avatar" />
                     <div class="ml-3">
                         <div class="font-medium">{{ conversation.avatarName }}</div>
                         <small class="text-gray-400">
