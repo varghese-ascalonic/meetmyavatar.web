@@ -119,6 +119,7 @@ export default {
 
 <style scoped>
 /* Dynamic viewport height fix */
+/* Dynamic viewport height fix */
 html,
 body {
     margin: 0;
@@ -132,6 +133,59 @@ body {
     flex-direction: column;
     height: calc(var(--vh, 1vh) * 100);
     overflow: hidden;
+
+    /* ✅ Background Image */
+    background-image: url('https://meetmyavatarstatic.blob.core.windows.net/staticfiles/chatbackgrounds/art_in_heart_1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Keeps the background static while scrolling */
+    position: relative;
+}
+
+/* ✅ Dim Overlay */
+.messenger::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5); /* Dims the background */
+    z-index: 0;
+}
+
+/* Messages Container */
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 80px;
+    padding-bottom: 80px;
+
+    /* ✅ Ensure messages are above the dim overlay */
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure messages are above the overlay */
+.messages > div {
+    position: relative;
+    z-index: 1;
+}
+
+@media (hover: none) and (pointer: coarse) {
+    /* Styles specific to touch devices */
+    .messages {
+        padding-bottom: 16px;
+    }
+}
+
+/* Prevent extra scrolling space */
+.messages::after {
+    content: '';
+    display: block;
+    height: 0px;
 }
 
 /* Header */
@@ -144,35 +198,10 @@ body {
     z-index: 10;
 }
 
-/* Messages Container */
-.messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px;
-    -webkit-overflow-scrolling: touch;
-    padding-top: 80px;
-    padding-bottom: 80px;
-}
-
-@media (hover: none) and (pointer: coarse) {
-  /* Styles specific to touch devices */
-  .messages {
-    padding-bottom: 16px;
-  }
-}
-
-/* Prevent extra scrolling space */
-.messages::after {
-    content: '';
-    display: block;
-    height: 0px;
-}
-
 /* Footer */
 .footer {
     background-color: #1f2937;
     position: fixed;
-    /* Always fixed at the bottom */
     bottom: 0;
     left: 0;
     width: 100%;
@@ -225,4 +254,5 @@ body {
 textarea::placeholder {
     color: #9ca3af;
 }
+
 </style>
