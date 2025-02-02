@@ -3,7 +3,7 @@ import router from '../router'; // Import the router for handling redirects
 
 // API configuration
 const API_CONFIG = {
-    LOCAL: "https://localhost:32771",
+    LOCAL: "https://localhost:32769",
     REMOTE: "https://meetmyavatar-dya3d4avdpbbf3ak.westeurope-01.azurewebsites.net",
 };
 

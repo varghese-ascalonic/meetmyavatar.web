@@ -31,15 +31,21 @@ export default {
                     .build();
 
                 // Handle receiving messages
-                connection.on('ReceiveMessage', (user, content) => {
-                    const message = {
-                        id: Date.now(),
-                        content,
-                        sentAt: new Date(),
-                        sentFromUser: false, // Adjust logic
-                    };
-                    console.log(content)
-                    commit('addMessage', message);
+                connection.on('ReceiveMessage', (user, content, senderAvatarId) => {
+                    const selectedConversation = this.state.conversation.selectedConversation;
+
+                    if (selectedConversation && selectedConversation.avatarId === senderAvatarId) {
+                        // Only add the message if it matches the selected conversation
+                        const message = {
+                            id: Date.now(),
+                            content,
+                            sentAt: new Date(),
+                            sentFromUser: false, // Adjust logic
+                        };
+                        commit('addMessage', message);
+                    } else {
+                        console.log(`Message received for user ${senderAvatarId}, but not the selected conversation.`);
+                    }
                 });
 
                 // Handle loading messages
