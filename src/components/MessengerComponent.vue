@@ -3,6 +3,11 @@
         <!-- Navbar (Fixed Header) -->
         <header class="header">
             <div class="flex items-center">
+                <!-- Back Arrow Button (visible only on mobile) -->
+                <button class="block md:hidden mr-2 focus:outline-none" @click="goBack">
+                    <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/back-arrow.svg" alt="Back"
+                        class="h-6 w-6 filter invert" />
+                </button>
                 <img class="h-10 w-10 rounded-full" :src="selectedConversation.avatarProfilePictureUrl"
                     alt="User avatar" />
                 <div class="ml-3 text-base font-medium text-white">
