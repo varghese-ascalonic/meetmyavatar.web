@@ -81,19 +81,21 @@ export default {
         formatDate(date) {
             if (!date) return ''; // Handle null/undefined cases safely
 
-            const options = { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' };
-
-            // Parse date as UTC first
-            const parsedDate = new Date(date + 'Z');
+            // Ensure the date is treated as UTC
+            const parsedDate = new Date(date + 'Z'); // ✅ Forces JavaScript to treat it as UTC
 
             if (isNaN(parsedDate)) {
                 console.error("Invalid date:", date);
                 return "Invalid date"; // Handle errors gracefully
             }
 
-            return parsedDate.toLocaleTimeString(undefined, options);
+            // Convert UTC to the user's local time
+            return new Intl.DateTimeFormat(undefined, {
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone // ✅ Uses user's actual timezone
+            }).format(parsedDate);
         },
-
 
         scrollToBottom() {
             this.$nextTick(() => {
