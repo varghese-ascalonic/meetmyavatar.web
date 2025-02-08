@@ -36,6 +36,19 @@ export default {
     },
     computed: {
         ...mapState('conversation', ['conversations', 'selectedConversation']),
+        avatarNameFromUrl() {
+            return this.$route.params.avatarName;
+        }
+    },
+    watch: {
+        // When the route changes, update the selected conversation accordingly
+        avatarNameFromUrl(newVal) {
+            if (newVal) {
+                this.selectConversationByAvatarName(newVal);
+            } else {
+                this.clearSelectedConversation();
+            }
+        }
     },
     methods: {
         ...mapActions('conversation', ['fetchConversations', 'selectConversation']),
@@ -44,6 +57,27 @@ export default {
         handleConversationSelection(conversation) {
             this.selectConversation(conversation);
             this.showConversationListOnMobile = false; // Hide conversation list on mobile screens
+        },
+        async selectConversationByAvatarName(avatarName) {
+            // Ensure conversations are loaded
+            await this.fetchConversations();
+
+            // Find the conversation with the matching avatarName
+            const matchingConversation = this.conversations.find(
+                (conv) => conv.avatarName === avatarName
+            );
+
+            if (matchingConversation) {
+                // Select the matching conversation via the Vuex action
+                this.selectConversation(matchingConversation);
+            } else {
+                // If no matching conversation is found, clear the selection
+                this.clearSelectedConversation();
+                console.warn(`No conversation found for avatarName: ${avatarName}`);
+            }
+        },
+        clearSelectedConversation() {
+            this.$store.commit('conversation/setSelectedConversation', null);
         }
     },
     async mounted() {
@@ -52,6 +86,9 @@ export default {
             this.fetchConversations();  // Fetch conversations when user info is loaded
         } catch (error) {
             console.error('Error fetching user info or conversations:', error);
+        }
+        if (this.avatarNameFromUrl) { // Use avatarNameFromUrl instead of conversationEmail
+            await this.selectConversationByAvatarName(this.avatarNameFromUrl);
         }
     }
 };

@@ -25,7 +25,7 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
-        path: '/messages/:conversationEmail',
+        path: '/messages/:avatarName',
         name: 'MessengerSelected',
         component: MessengerLayout,
         meta: { requiresAuth: true }

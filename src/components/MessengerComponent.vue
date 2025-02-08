@@ -74,6 +74,10 @@ export default {
             'initializeSignalR',
         ]),
 
+        goBack() {
+            this.$router.push({ name: 'MessengerList' });
+        },
+
         handleSendMessage() {
             if (this.messageContent.trim()) {
                 const senderAvatarId =
