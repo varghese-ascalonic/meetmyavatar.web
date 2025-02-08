@@ -79,11 +79,24 @@ export default {
             }
         },
         formatDate(date) {
+            if (!date) return ''; // Handle null/undefined cases safely
+
             const options = { hour: '2-digit', minute: '2-digit' };
-            // Convert "YYYY-MM-DD HH:mm:ss.SSSSSSS" to "YYYY-MM-DDTHH:mm:ss.SSSSSSSZ"
-            const formattedDate = date.replace(" ", "T") + "Z";
-            return new Date(formattedDate).toLocaleTimeString(undefined, options);
+
+            // Ensure the input is a string before applying replace
+            const dateString = typeof date === 'string' ? date.replace(" ", "T") + "Z" : date;
+
+            // Parse date correctly
+            const parsedDate = new Date(dateString);
+
+            if (isNaN(parsedDate)) {
+                console.error("Invalid date:", date);
+                return "Invalid date"; // Handle errors gracefully
+            }
+
+            return parsedDate.toLocaleTimeString(undefined, options);
         },
+
 
         scrollToBottom() {
             this.$nextTick(() => {
