@@ -14,18 +14,23 @@
         <!-- Messages Container (Scrollable) -->
         <main class="messages" ref="messagesContainer">
             <div>
-                <div v-for="message in messages" :key="message.id" class="mb-4 flex"
-                    :class="{ 'text-right': message.sentFromUser }">
-                    <div class="flex-1 px-2">
-                        <div :class="message.sentFromUser ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-200'"
-                            class="inline-block rounded-lg p-2 px-4 max-w-xs">
-                            <span>{{ message.content }}</span>
-                        </div>
-                        <div class="pl-4">
-                            <small class="text-gray-400">{{ formatDate(message.sentAt) }}</small>
+                <!-- Using a template block to conditionally insert date headers -->
+                <template v-for="(message, index) in messages" :key="message.id">
+                    <div v-if="shouldShowDateHeader(index)" class="date-header">
+                        <span>{{ formatDateHeader(message.sentAt) }}</span>
+                    </div>
+                    <div class="mb-4 flex" :class="{ 'text-right': message.sentFromUser }">
+                        <div class="flex-1 px-2">
+                            <div :class="message.sentFromUser ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-200'"
+                                class="inline-block rounded-lg p-2 px-4 max-w-xs">
+                                <span>{{ message.content }}</span>
+                            </div>
+                            <div class="pl-4">
+                                <small class="text-gray-400">{{ formatDate(message.sentAt) }}</small>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </template>
             </div>
         </main>
 
@@ -41,8 +46,6 @@
         </footer>
     </div>
 </template>
-
-
 
 <script scoped>
 import { mapState, mapActions } from 'vuex';
@@ -60,11 +63,16 @@ export default {
         ...mapState('conversation', ['selectedConversation']),
     },
     methods: {
-        ...mapActions('messenger', ['sendMessage', 'loadMessages', 'initializeSignalR']),
+        ...mapActions('messenger', [
+            'sendMessage',
+            'loadMessages',
+            'initializeSignalR',
+        ]),
 
         handleSendMessage() {
             if (this.messageContent.trim()) {
-                const senderAvatarId = this.user.userAccessMap.avatarAccessList[0]?.avatarId;
+                const senderAvatarId =
+                    this.user.userAccessMap.avatarAccessList[0]?.avatarId;
                 const recipientAvatarId = this.selectedConversation?.avatarId;
 
                 const messagePayload = {
@@ -79,6 +87,7 @@ export default {
             }
         },
 
+        // Leave this function unchanged
         formatDate(date) {
             if (!date) return ''; // Handle null/undefined safely
 
@@ -108,6 +117,41 @@ export default {
             return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         },
 
+        // New helper: Check if a date header should be shown before this message
+        shouldShowDateHeader(index) {
+            if (index === 0) return true;
+            const currentMessageDate = new Date(this.messages[index].sentAt);
+            const previousMessageDate = new Date(this.messages[index - 1].sentAt);
+            return currentMessageDate.toDateString() !== previousMessageDate.toDateString();
+        },
+
+        // New helper: Format the date header label
+        formatDateHeader(date) {
+            const messageDate = new Date(date);
+            const today = new Date();
+            const yesterday = new Date();
+            yesterday.setDate(today.getDate() - 1);
+
+            function isSameDay(d1, d2) {
+                return (
+                    d1.getFullYear() === d2.getFullYear() &&
+                    d1.getMonth() === d2.getMonth() &&
+                    d1.getDate() === d2.getDate()
+                );
+            }
+
+            if (isSameDay(messageDate, today)) {
+                return 'today';
+            } else if (isSameDay(messageDate, yesterday)) {
+                return 'yesterday';
+            } else {
+                return messageDate.toLocaleDateString([], {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                });
+            }
+        },
 
         scrollToBottom() {
             this.$nextTick(() => {
@@ -142,9 +186,7 @@ export default {
 };
 </script>
 
-
 <style scoped>
-/* Dynamic viewport height fix */
 /* Dynamic viewport height fix */
 html,
 body {
@@ -282,5 +324,21 @@ body {
 
 textarea::placeholder {
     color: #9ca3af;
+}
+
+/* Date Header styling */
+.date-header {
+    text-align: center;
+    margin: 12px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.date-header span {
+    background-color: #374151;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    color: #fff;
 }
 </style>
