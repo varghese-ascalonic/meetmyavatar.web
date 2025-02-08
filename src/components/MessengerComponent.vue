@@ -78,24 +78,36 @@ export default {
                 this.messageContent = '';
             }
         },
+
         formatDate(date) {
-            if (!date) return ''; // Handle null/undefined cases safely
+            if (!date) return ''; // Handle null/undefined safely
 
-            // Ensure the date is treated as UTC
-            const parsedDate = new Date(date + 'Z'); // ✅ Forces JavaScript to treat it as UTC
+            let dateObj;
 
-            if (isNaN(parsedDate)) {
-                console.error("Invalid date:", date);
-                return "Invalid date"; // Handle errors gracefully
+            if (typeof date === 'string') {
+                // Convert the server string into proper ISO 8601 format.
+                let isoString = date.replace(' ', 'T');
+                if (!isoString.endsWith('Z')) {
+                    isoString += 'Z';
+                }
+                isoString = isoString.replace(/(\.\d{3})\d*(Z)$/, '$1$2');
+                dateObj = new Date(isoString);
+            } else if (date instanceof Date) {
+                // The Date object might have been parsed as local time even though the server meant UTC.
+                // Adjust by adding the local timezone offset.
+                dateObj = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            } else {
+                dateObj = new Date(date);
             }
 
-            // Convert UTC to the user's local time
-            return new Intl.DateTimeFormat(undefined, {
-                hour: '2-digit',
-                minute: '2-digit',
-                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone // ✅ Uses user's actual timezone
-            }).format(parsedDate);
+            if (isNaN(dateObj)) {
+                console.error("Invalid date:", date);
+                return "Invalid date";
+            }
+
+            return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         },
+
 
         scrollToBottom() {
             this.$nextTick(() => {
