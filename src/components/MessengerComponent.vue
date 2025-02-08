@@ -34,7 +34,8 @@
             <div class="write">
                 <textarea v-model="messageContent" class="textarea" placeholder="Type a message..."></textarea>
                 <button @click="handleSendMessage" class="send-button">
-                    <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/send-icon.svg" alt="Send" class="w-6 h-6" />
+                    <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/send-icon.svg" alt="Send"
+                        class="w-6 h-6" />
                 </button>
             </div>
         </footer>
@@ -77,10 +78,9 @@ export default {
                 this.messageContent = '';
             }
         },
-
         formatDate(date) {
             const options = { hour: '2-digit', minute: '2-digit' };
-            return new Date(date).toLocaleTimeString(undefined, options);
+            return new Date(date + 'Z').toLocaleTimeString(undefined, options);
         },
 
         scrollToBottom() {
@@ -138,7 +138,8 @@ body {
     background-image: url('https://meetmyavatarstatic.blob.core.windows.net/staticfiles/chatbackgrounds/art_in_heart_1.jpg');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* Keeps the background static while scrolling */
+    background-attachment: fixed;
+    /* Keeps the background static while scrolling */
     position: relative;
 }
 
@@ -150,7 +151,8 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5); /* Dims the background */
+    background: rgba(0, 0, 0, 0.5);
+    /* Dims the background */
     z-index: 0;
 }
 
@@ -169,12 +171,13 @@ body {
 }
 
 /* Ensure messages are above the overlay */
-.messages > div {
+.messages>div {
     position: relative;
     z-index: 1;
 }
 
 @media (hover: none) and (pointer: coarse) {
+
     /* Styles specific to touch devices */
     .messages {
         padding-bottom: 16px;
@@ -254,5 +257,4 @@ body {
 textarea::placeholder {
     color: #9ca3af;
 }
-
 </style>
