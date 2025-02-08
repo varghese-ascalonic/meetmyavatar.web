@@ -93,7 +93,7 @@ export default {
             const newMessage = {
                 id: Date.now(),
                 content,
-                sentAt: new Date(),
+                sentAt: new Date().toISOString(),
                 sentFromUser: true,
             };
 
