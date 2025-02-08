@@ -80,7 +80,9 @@ export default {
         },
         formatDate(date) {
             const options = { hour: '2-digit', minute: '2-digit' };
-            return new Date(date + 'Z').toLocaleTimeString(undefined, options);
+            // Convert "YYYY-MM-DD HH:mm:ss.SSSSSSS" to "YYYY-MM-DDTHH:mm:ss.SSSSSSSZ"
+            const formattedDate = date.replace(" ", "T") + "Z";
+            return new Date(formattedDate).toLocaleTimeString(undefined, options);
         },
 
         scrollToBottom() {
