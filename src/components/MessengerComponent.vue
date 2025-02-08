@@ -81,13 +81,10 @@ export default {
         formatDate(date) {
             if (!date) return ''; // Handle null/undefined cases safely
 
-            const options = { hour: '2-digit', minute: '2-digit' };
+            const options = { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' };
 
-            // Ensure the input is a string before applying replace
-            const dateString = typeof date === 'string' ? date.replace(" ", "T") + "Z" : date;
-
-            // Parse date correctly
-            const parsedDate = new Date(dateString);
+            // Parse date as UTC first
+            const parsedDate = new Date(date + 'Z');
 
             if (isNaN(parsedDate)) {
                 console.error("Invalid date:", date);
