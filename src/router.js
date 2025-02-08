@@ -3,6 +3,8 @@ import AuthenticateComponent from './components/AuthenticateComponent.vue';
 import HelloWorld from './components/HelloWorld.vue';
 import MessengerLayout from './components/MessengerLayout.vue';
 import LoginSuccess from './components/LoginSuccess.vue';
+import PrivacyPolicyComponent from './components/PrivacyPolicyComponent.vue';
+import TermsOfServiceComponent from './components/TermsOfServiceComponent.vue';
 
 const routes = [
     {
@@ -26,6 +28,16 @@ const routes = [
         path: '/login-success',
         name: 'LoginSuccess',
         component: LoginSuccess
+    },
+    {
+        path: '/privacy-policy',
+        name: 'PrivacyPolicy',
+        component: PrivacyPolicyComponent
+    },
+    {
+        path: '/terms-of-service',
+        name: 'TermsOfService',
+        component: TermsOfServiceComponent
     }
     // Add more routes here as needed
 ];
