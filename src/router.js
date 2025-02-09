@@ -5,6 +5,7 @@ import MessengerLayout from './components/MessengerLayout.vue';
 import LoginSuccess from './components/LoginSuccess.vue';
 import PrivacyPolicyComponent from './components/PrivacyPolicyComponent.vue';
 import TermsOfServiceComponent from './components/TermsOfServiceComponent.vue';
+import SettingsComponent from './components/SettingsComponent.vue';
 
 const routes = [
     {
@@ -44,6 +45,12 @@ const routes = [
         path: '/terms-of-service',
         name: 'TermsOfService',
         component: TermsOfServiceComponent
+    },
+    {
+        path: '/settings',
+        name: 'Settings',
+        component: SettingsComponent,
+        meta: { requiresAuth: true }
     }
     // Add more routes here as needed
 ];

@@ -4,9 +4,9 @@
         <div class="p-4 bg-gray-900 border-b border-gray-700">
             <div class="flex items-center">
                 <!-- Settings Icon Button on the left side -->
-                <button class="mr-2 focus:outline-none bg-gray-300 hover:bg-gray-400 rounded-full p-2">
+                <button class="mr-2 focus:outline-none bg-transparent"  @click="navigateToSettings()">
                     <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/settings.svg"
-                        alt="Settings Icon" class="h-6 w-6" />
+                        alt="Settings Icon" class="h-6 w-6" style="filter: brightness(0) invert(1);" />
                 </button>
                 <!-- Search Input Box -->
                 <input v-model="searchQuery" @input="onSearch" type="text"
@@ -76,6 +76,9 @@ export default {
         },
         goToConversationByAvatarName(conversation) {
             this.$router.push({ name: 'MessengerSelected', params: { avatarName: conversation.avatarName } });
+        },
+        navigateToSettings() {
+            this.$router.push('/settings');
         }
     },
     mounted() {
