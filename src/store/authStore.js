@@ -6,6 +6,7 @@ export default {
         user: {
             id: null,
             email: '',
+            profilePictureUrl: null,
             authToken: '',
             userAccessMap: {}
         },

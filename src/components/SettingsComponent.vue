@@ -23,14 +23,22 @@
                     <label for="displayName" class="block text-sm font-medium mb-1">Display Name</label>
                     <input id="displayName" type="text" v-model="displayName"
                         class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none" />
+                    <!-- Show validation error for displayName if present -->
+                    <div v-if="validationErrors.displayName" class="text-red-400 text-xs mt-1">
+                        {{ validationErrors.displayName }}
+                    </div>
                 </div>
                 <div>
-                    <label for="username" class="block text-sm font-medium mb-1">Username</label>
-                    <input id="username" type="text" v-model="username"
+                    <label for="avatarId" class="block text-sm font-medium mb-1">Avatar ID</label>
+                    <input id="avatarId" type="text" v-model="avatarId"
                         class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none" />
+                    <!-- Show validation error for unique avatar name if present -->
+                    <div v-if="validationErrors.uniqueName" class="text-red-400 text-xs mt-1">
+                        {{ validationErrors.uniqueName }}
+                    </div>
                 </div>
                 <div>
-                    <label for="email" class="block text-sm font-medium mb-1">Email</label>
+                    <label for="email" class="block text-sm font-medium mb-1">Accessing this Avatar using</label>
                     <input id="email" type="email" :value="user.email" disabled
                         class="w-full p-2 bg-gray-600 text-gray-300 rounded cursor-not-allowed" />
                 </div>
@@ -60,41 +68,61 @@ export default {
     data() {
         return {
             displayName: '',
-            username: '',
-            // Fallback profile picture if none exists in user data
-            defaultProfilePicture: 'https://meetmyavatarstatic.blob.core.windows.net/staticfiles/default-avatar.png'
+            avatarId: '',
+            defaultProfilePicture: 'https://meetmyavatarstatic.blob.core.windows.net/staticfiles/profile-default.svg'
         };
     },
     computed: {
-        // Assume user data is stored in the 'auth' module of Vuex
+        // Get user info from the auth module.
         user() {
             return this.$store.getters['auth/user'] || {};
+        },
+        // Get any validation errors from the settings store.
+        validationErrors() {
+            return this.$store.getters['settings/validationErrors'] || {};
         }
     },
     created() {
-        // Initialize form fields with current user details
-        if (this.user) {
-            this.displayName = this.user.displayName || '';
-            this.username = this.user.username || '';
-        }
+        // Fetch the avatar profile when the page loads.
+        this.$store.dispatch('settings/fetchAvatarProfile')
+            .then(() => {
+                const profile = this.$store.getters['settings/avatarProfile'];
+                if (profile) {
+                    // Note: mapping API properties to component data.
+                    this.displayName = profile.avatarName;
+                    this.avatarId = profile.uniqueAvatarId;
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching avatar profile:", err);
+            });
     },
     methods: {
         goBack() {
             this.$router.push({ name: 'MessengerList' });
         },
-        saveSettings() {
-            // Implement saving logic (e.g., dispatch a Vuex action)
-            console.log('Saving settings:', this.displayName, this.username);
-            // Example: this.$store.dispatch('auth/updateUserSettings', { displayName: this.displayName, username: this.username });
+        async saveSettings() {
+            // Dispatch the update action from the settings store.
+            try {
+                const updatedProfile = await this.$store.dispatch('settings/updateAvatarProfile', {
+                    avatarName: this.displayName,
+                    uniqueAvatarId: this.avatarId
+                });
+                // Optionally update local fields with the updated profile.
+                this.displayName = updatedProfile.avatarName;
+                this.avatarId = updatedProfile.uniqueAvatarId;
+                alert('Profile updated successfully!');
+            } catch (error) {
+                console.error("Error updating profile:", error);
+            }
         },
         logout() {
-            // Dispatch logout action and navigate to authentication
             this.$store.dispatch('auth/logout');
             this.$router.push('/authenticate');
         },
         deleteAccount() {
             if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                // Implement account deletion logic here (e.g., dispatch a Vuex action)
+                // Implement account deletion logic here.
                 console.log('Account deleted');
             }
         }
@@ -107,15 +135,9 @@ export default {
     min-height: 100vh;
     max-width: 600px;
     margin: 0 auto;
-    /* Centers the container horizontally */
 }
 
-/* Additional header styling can be added here if needed */
-.header {}
-
-/* Make the whole page background match the container's background */
 :global(body) {
     background-color: #2d3748;
-    /* Tailwind's bg-gray-800 color */
 }
 </style>
