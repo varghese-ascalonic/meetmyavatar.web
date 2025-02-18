@@ -29,7 +29,7 @@
         <div class="conversation-list">
             <div v-for="conversation in filteredConversations" :key="conversation.id"
                 class="p-4 border-b border-gray-700 hover:bg-gray-700 cursor-pointer"
-                @click="goToConversationByAvatarName(conversation)">
+                @click="goToConversationByAvatarUniqueId(conversation)">
                 <div class="flex items-center">
                     <img class="h-10 w-10 rounded-full" :src="conversation.avatarProfilePictureUrl" alt="User avatar" />
                     <div class="ml-3">
@@ -74,8 +74,8 @@ export default {
             // Dispatch search action to Vuex when typing in the search box
             this.searchConversations(this.searchQuery);
         },
-        goToConversationByAvatarName(conversation) {
-            this.$router.push({ name: 'MessengerSelected', params: { avatarName: conversation.avatarName } });
+        goToConversationByAvatarUniqueId(conversation) {
+            this.$router.push({ name: 'MessengerSelected', params: { avatarUniqueId: conversation.avatarUniqueId } });
         },
         navigateToSettings() {
             this.$router.push('/settings');

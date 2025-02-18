@@ -36,15 +36,15 @@ export default {
     },
     computed: {
         ...mapState('conversation', ['conversations', 'selectedConversation']),
-        avatarNameFromUrl() {
-            return this.$route.params.avatarName;
+        avatarUniqueIdFromUrl() {
+            return this.$route.params.avatarUniqueId;
         }
     },
     watch: {
         // When the route changes, update the selected conversation accordingly
-        avatarNameFromUrl(newVal) {
+        avatarUniqueIdFromUrl(newVal) {
             if (newVal) {
-                this.selectConversationByAvatarName(newVal);
+                this.selectConversationByUniqueAvatarId(newVal);
             } else {
                 this.clearSelectedConversation();
             }
@@ -58,13 +58,13 @@ export default {
             this.selectConversation(conversation);
             this.showConversationListOnMobile = false; // Hide conversation list on mobile screens
         },
-        async selectConversationByAvatarName(avatarName) {
+        async selectConversationByUniqueAvatarId(avatarUniqueId) {
             // Ensure conversations are loaded
             await this.fetchConversations();
 
-            // Find the conversation with the matching avatarName
+            // Find the conversation with the matching avatarId
             const matchingConversation = this.conversations.find(
-                (conv) => conv.avatarName === avatarName
+                (conv) => conv.avatarUniqueId === avatarUniqueId
             );
 
             if (matchingConversation) {
@@ -73,7 +73,7 @@ export default {
             } else {
                 // If no matching conversation is found, clear the selection
                 this.clearSelectedConversation();
-                console.warn(`No conversation found for avatarName: ${avatarName}`);
+                console.warn(`No conversation found for avatar: ${avatarUniqueId}`);
             }
         },
         clearSelectedConversation() {
@@ -87,8 +87,8 @@ export default {
         } catch (error) {
             console.error('Error fetching user info or conversations:', error);
         }
-        if (this.avatarNameFromUrl) { // Use avatarNameFromUrl instead of conversationEmail
-            await this.selectConversationByAvatarName(this.avatarNameFromUrl);
+        if (this.avatarUniqueIdFromUrl) { // Use avatarUniqueIdFromUrl instead of conversationEmail
+            await this.selectConversationByUniqueAvatarId(this.avatarUniqueIdFromUrl);
         }
     }
 };

@@ -28,7 +28,7 @@ export default {
                     return;
                 }
 
-                const avatarName = avatarAccessList[0].avatarName;
+                const avatarId = avatarAccessList[0].avatarId;
                 const token = localStorage.getItem("authToken"); // Get the JWT token from localStorage
 
                 const response = await apiClient.get(`/Conversation/conversations`, {
@@ -36,7 +36,7 @@ export default {
                         Authorization: `Bearer ${token}` // Set the Authorization header with the Bearer token
                     },
                     params: {
-                        avatarName: avatarName
+                        avatarId: avatarId
                     }
                 });
 
