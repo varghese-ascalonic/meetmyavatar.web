@@ -42,6 +42,18 @@
                     <input id="email" type="email" :value="user.email" disabled
                         class="w-full p-2 bg-gray-600 text-gray-300 rounded cursor-not-allowed" />
                 </div>
+                <!-- New Global Prompt Textarea -->
+                <div>
+                    <label for="globalPrompt" class="block text-sm font-medium mb-1">About this Avatar</label>
+                    <textarea id="globalPrompt" v-model="globalPrompt" rows="3"
+                        placeholder="Enter a brief description about your avatar. The Automatic replies will be based on this description."
+                        class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none"></textarea>
+                    <!-- Optionally, add validation error for globalPrompt if needed -->
+                    <div v-if="validationErrors.globalPrompt" class="text-red-400 text-xs mt-1">
+                        {{ validationErrors.globalPrompt }}
+                    </div>
+                </div>
+
             </div>
 
             <!-- Buttons -->
@@ -69,6 +81,7 @@ export default {
         return {
             displayName: '',
             avatarId: '',
+            globalPrompt: '', // New field for the global prompt
             defaultProfilePicture: 'https://meetmyavatarstatic.blob.core.windows.net/staticfiles/profile-default.svg'
         };
     },
@@ -91,6 +104,7 @@ export default {
                     // Note: mapping API properties to component data.
                     this.displayName = profile.avatarName;
                     this.avatarId = profile.uniqueAvatarId;
+                    this.globalPrompt = profile.globalPrompt || '';
                 }
             })
             .catch(err => {
@@ -106,11 +120,13 @@ export default {
             try {
                 const updatedProfile = await this.$store.dispatch('settings/updateAvatarProfile', {
                     avatarName: this.displayName,
-                    uniqueAvatarId: this.avatarId
+                    uniqueAvatarId: this.avatarId,
+                    globalPrompt: this.globalPrompt  // Include globalPrompt in the payload
                 });
                 // Optionally update local fields with the updated profile.
                 this.displayName = updatedProfile.avatarName;
                 this.avatarId = updatedProfile.uniqueAvatarId;
+                this.globalPrompt = updatedProfile.globalPrompt || '';
                 alert('Profile updated successfully!');
             } catch (error) {
                 console.error("Error updating profile:", error);
