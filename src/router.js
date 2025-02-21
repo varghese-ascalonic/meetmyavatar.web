@@ -6,6 +6,7 @@ import LoginSuccess from './components/LoginSuccess.vue';
 import PrivacyPolicyComponent from './components/PrivacyPolicyComponent.vue';
 import TermsOfServiceComponent from './components/TermsOfServiceComponent.vue';
 import SettingsComponent from './components/SettingsComponent.vue';
+import ProfileComponent from './components/ProfileComponent.vue';
 
 const routes = [
     {
@@ -51,7 +52,12 @@ const routes = [
         name: 'Settings',
         component: SettingsComponent,
         meta: { requiresAuth: true }
-    }
+    },
+    {
+        path: '/profile/:avatarUniqueId',
+        name: 'AvatarProfile',
+        component: ProfileComponent
+    },
     // Add more routes here as needed
 ];
 

@@ -4,6 +4,7 @@ import applicationStore from './applicationStore';
 import messageStore from './messageStore';
 import conversationStore from './conversationStore';
 import settingsStore from './settingsStore';
+import profileStore from './profileStore';
 
 export default createStore({
   modules: {
@@ -11,6 +12,7 @@ export default createStore({
     application: applicationStore,
     messenger: messageStore,
     conversation: conversationStore,
-    settings: settingsStore
+    settings: settingsStore,
+    profile: profileStore
   },
 });
