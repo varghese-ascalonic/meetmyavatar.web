@@ -83,7 +83,13 @@ export default {
     async mounted() {
         try {
             await this.fetchUserInfo(); // Fetch the user info on component mount
-            this.fetchConversations();  // Fetch conversations when user info is loaded
+            await this.fetchConversations();  // Fetch conversations when user info is loaded
+            var chatWith = localStorage.getItem("chatWith");
+            if(chatWith) {
+                chatWith = JSON.parse(chatWith);
+                localStorage.removeItem("chatWith")
+                this.selectConversation({ avatarId: chatWith.id, avatarName: chatWith.uniqueAvatarId, id: 0 })
+            }
         } catch (error) {
             console.error('Error fetching user info or conversations:', error);
         }

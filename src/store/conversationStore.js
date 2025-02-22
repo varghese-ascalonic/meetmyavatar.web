@@ -1,3 +1,4 @@
+import router from '@/router';
 import apiClient from '../axios/api'; // Use your axios client with dynamic base URL
 
 export default {
@@ -76,7 +77,9 @@ export default {
                 const conversationHandshakePayload = {
                     userAvatarId: userAvatarId,
                     conversation: {
-                        AvatarId: state.selectedConversation.avatarId
+                        AvatarId: state.selectedConversation.avatarId,
+                        AvatarUniqueId: '',
+                        AvatarProfilePictureUrl: ''
                     }
                 };
 
@@ -111,12 +114,14 @@ export default {
                 const userAvatarId = rootState.auth.user.userAccessMap.avatarAccessList[0].avatarId;
 
                 // Dispatch the action to initiate a new conversation
-                dispatch('initiateConversation', { userAvatarId }).then((newConversation) => {
-                    // After initiating the conversation, load messages for the new conversation
-                    dispatch('messenger/loadMessages', newConversation.id, { root: true });
-                }).catch(error => {
-                    console.error("Failed to initiate conversation:", error);
-                });
+                dispatch('initiateConversation', { userAvatarId })
+                    .then((newConversation) => {
+                        console.log("navigating to " + newConversation.avatarUniqueId);
+                        router.push(`/messages/${newConversation.avatarUniqueId}`);
+                    })
+                    .catch(error => {
+                        console.error("Failed to initiate conversation:", error);
+                    });
             }
 
         }

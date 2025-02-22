@@ -79,6 +79,9 @@ export default {
     },
     methods: {
         goToMessages() {
+            // Store the current avatar details in localStorage under the key "chatWith"
+            localStorage.setItem('chatWith', JSON.stringify(this.profile));
+            // Navigate to the messages page.
             this.$router.push({ name: 'MessengerList' });
         }
     }

@@ -19,7 +19,7 @@
         <div v-if="searchResults.length > 0" class="search-results p-4 bg-gray-800">
             <div v-for="result in searchResults" :key="result.id"
                 class="p-2 border-b border-gray-700 cursor-pointer hover:bg-gray-700"
-                @click="selectConversation(result)">
+                @click="handleSelectConversation(result)">
                 <div class="font-medium">{{ result.avatarName }}</div>
                 <small class="text-gray-400">{{ result.lastMessage?.content || 'No messages yet' }}</small>
             </div>
@@ -73,6 +73,19 @@ export default {
         onSearch() {
             // Dispatch search action to Vuex when typing in the search box
             this.searchConversations(this.searchQuery);
+        },
+        handleSelectConversation(result) {
+            // When a search result is selected, dispatch the selectConversation action.
+            this.selectConversation(result)
+                .then(() => {
+                    // After selection (or initiating a new conversation), clear the search box...
+                    this.searchQuery = '';
+                    // ...and clear the search results by dispatching with an empty query.
+                    this.searchConversations('');
+                })
+                .catch((error) => {
+                    console.error("Error selecting conversation:", error);
+                });
         },
         goToConversationByAvatarUniqueId(conversation) {
             this.$router.push({ name: 'MessengerSelected', params: { avatarUniqueId: conversation.avatarUniqueId } });
