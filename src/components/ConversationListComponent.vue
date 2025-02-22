@@ -4,7 +4,7 @@
         <div class="p-4 bg-gray-900 border-b border-gray-700">
             <div class="flex items-center">
                 <!-- Settings Icon Button on the left side -->
-                <button class="mr-2 focus:outline-none bg-transparent"  @click="navigateToSettings()">
+                <button class="mr-2 focus:outline-none bg-transparent" @click="navigateToSettings()">
                     <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/settings.svg"
                         alt="Settings Icon" class="h-6 w-6" style="filter: brightness(0) invert(1);" />
                 </button>
@@ -36,7 +36,7 @@
                         <div class="font-medium">{{ conversation.avatarName }}</div>
                         <small class="text-gray-400">
                             {{ conversation.lastMessage?.sentFromUser ? 'You: ' : '' }}{{
-                                conversation.lastMessage?.content }}
+                                truncateText(conversation.lastMessage?.content, 50) }}
                         </small>
                     </div>
                 </div>
@@ -92,6 +92,10 @@ export default {
         },
         navigateToSettings() {
             this.$router.push('/settings');
+        },
+        truncateText(text, maxLength) {
+            if (!text) return '';
+            return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
         }
     },
     mounted() {
