@@ -6,7 +6,7 @@
                 <!-- Superhero Cat Image Above the Title -->
                 <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/cat-superhero.png"
                     alt="Superhero Cat" class="mx-auto mb-6 w-32 h-32 object-contain" />
-                <h1 class="text-6xl font-extrabold mb-4">MeetMyAvatar</h1>
+                <h1 class="text-5xl font-extrabold mb-4">MeetMyAvatar</h1>
                 <p class="text-2xl mb-8">Gives your chat superpowers!</p>
                 <a href="/authenticate"
                     class="inline-block bg-white text-blue-600 font-bold py-4 px-8 rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300">
