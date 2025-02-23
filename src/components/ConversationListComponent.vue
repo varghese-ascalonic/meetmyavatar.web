@@ -1,40 +1,41 @@
 <template>
-    <div class="h-full bg-gray-800 text-white" style="width: 100%;">
+    <div class="h-full w-full bg-gradient-to-b from-gray-900 to-gray-800">
         <!-- Search Box -->
-        <div class="p-4 bg-gray-900 border-b border-gray-700">
-            <div class="flex items-center">
-                <!-- Settings Icon Button on the left side -->
-                <button class="mr-2 focus:outline-none bg-transparent" @click="navigateToSettings()">
+        <div class="p-4 bg-gray-800 border-b border-gray-700 shadow-md">
+            <div class="flex items-center space-x-3">
+                <!-- Settings Icon Button -->
+                <button class="focus:outline-none" @click="navigateToSettings()">
                     <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/settings.svg"
-                        alt="Settings Icon" class="h-6 w-6" style="filter: brightness(0) invert(1);" />
+                        alt="Settings Icon" class="h-6 w-6" style="filter: brightness(0) invert(0.8);" />
                 </button>
                 <!-- Search Input Box -->
                 <input v-model="searchQuery" @input="onSearch" type="text"
                     placeholder="Search users or conversations..."
-                    class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none" />
+                    class="flex-1 p-3 bg-gray-700 border border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 text-white" />
             </div>
         </div>
 
-        <!-- Search Results (only shown if search results are present) -->
-        <div v-if="searchResults.length > 0" class="search-results p-4 bg-gray-800">
+        <!-- Search Results -->
+        <div v-if="searchResults.length > 0" class="search-results bg-gray-800 border-b border-gray-700">
             <div v-for="result in searchResults" :key="result.id"
-                class="p-2 border-b border-gray-700 cursor-pointer hover:bg-gray-700"
+                class="p-3 border-b border-gray-700 cursor-pointer hover:bg-blue-900 transition-colors duration-200"
                 @click="handleSelectConversation(result)">
-                <div class="font-medium">{{ result.avatarName }}</div>
-                <small class="text-gray-400">{{ result.lastMessage?.content || 'No messages yet' }}</small>
+                <div class="font-medium text-lg text-white">{{ result.avatarName }}</div>
+                <small class="text-gray-300">{{ result.lastMessage?.content || 'No messages yet' }}</small>
             </div>
         </div>
 
         <!-- Conversation List -->
-        <div class="conversation-list">
+        <div class="conversation-list overflow-y-auto" style="height: calc(100% - 8rem);">
             <div v-for="conversation in filteredConversations" :key="conversation.id"
-                class="p-4 border-b border-gray-700 hover:bg-gray-700 cursor-pointer"
+                class="p-4 border-b border-gray-700 hover:bg-blue-900 cursor-pointer transition-colors duration-200"
                 @click="goToConversationByAvatarUniqueId(conversation)">
-                <div class="flex items-center">
-                    <img class="h-10 w-10 rounded-full" :src="conversation.avatarProfilePictureUrl" alt="User avatar" />
-                    <div class="ml-3">
-                        <div class="font-medium">{{ conversation.avatarName }}</div>
-                        <small class="text-gray-400">
+                <div class="flex items-center space-x-4">
+                    <img class="h-10 w-10 rounded-full object-cover" :src="conversation.avatarProfilePictureUrl"
+                        alt="User avatar" />
+                    <div>
+                        <div class="font-medium text-lg text-white">{{ conversation.avatarName }}</div>
+                        <small class="text-gray-300">
                             {{ conversation.lastMessage?.sentFromUser ? 'You: ' : '' }}{{
                                 truncateText(conversation.lastMessage?.content, 50) }}
                         </small>
