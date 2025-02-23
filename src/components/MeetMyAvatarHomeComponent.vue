@@ -1,8 +1,11 @@
 <template>
-    <div class="bg-gray-50">
+    <div class="bg-gray-50 overflow-x-hidden">
         <!-- Hero Section -->
         <section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20">
-            <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+                <!-- Superhero Cat Image Above the Title -->
+                <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/cat-superhero.png"
+                    alt="Superhero Cat" class="mx-auto mb-6 w-32 h-32 object-contain" />
                 <h1 class="text-6xl font-extrabold mb-4">MeetMyAvatar</h1>
                 <p class="text-2xl mb-8">Gives your chat superpowers!</p>
                 <a href="/authenticate"
@@ -14,7 +17,7 @@
 
         <!-- Features Section -->
         <section class="py-20">
-            <div class="max-w-6xl mx-auto px-6">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <div>
                         <img src="https://source.unsplash.com/featured/?avatar" alt="Avatar Illustration"
@@ -56,7 +59,7 @@
 
         <!-- Video Showcase Section -->
         <section class="py-20 bg-gray-100">
-            <div class="max-w-6xl mx-auto px-6">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6">
                 <h2 class="text-4xl font-bold text-gray-800 text-center mb-12">See It in Action</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div v-for="(video, index) in videos" :key="index" class="relative">
@@ -76,7 +79,7 @@
 
         <!-- Call-to-Action Section -->
         <section class="bg-gradient-to-r from-indigo-700 to-blue-600 py-16">
-            <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
                 <h2 class="text-4xl font-bold text-white mb-4">Ready to Get Superpowered?</h2>
                 <p class="text-xl text-white mb-8">
                     Let your avatar do the talking – even when you're asleep.
@@ -90,7 +93,7 @@
 
         <!-- Footer -->
         <footer class="bg-gray-800 text-gray-300 py-8">
-            <div class="max-w-4xl mx-auto px-6 text-center">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
                 <p>&copy; 2025 MeetMyAvatar. All rights reserved.</p>
             </div>
         </footer>
@@ -123,7 +126,6 @@ export default {
     },
     methods: {
         handleVideoPlay(index) {
-            // Directly update the reactive property; Vue 3 proxies support this.
             setTimeout(() => {
                 this.videos[index].showCaption = true;
             }, 3000);
