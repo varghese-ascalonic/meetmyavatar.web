@@ -197,7 +197,10 @@ export default {
         },
 
         formatContent(content) {
-            return content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            if (!content) return '';
+            const boldFormatted = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            const withLineBreaks = boldFormatted.replace(/\n/g, '<br>');
+            return withLineBreaks;
         }
     },
     watch: {
