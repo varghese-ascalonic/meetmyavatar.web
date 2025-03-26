@@ -1,10 +1,10 @@
 <template>
     <div class="messenger">
         <!-- Navbar (Fixed Header) -->
-        <header class="header">
+        <header class="header cursor-pointer" @click="goToProfile">
             <div class="flex items-center">
                 <!-- Back Arrow Button (visible only on mobile) -->
-                <button class="block md:hidden mr-2 focus:outline-none" @click="goBack">
+                <button class="block md:hidden mr-2 focus:outline-none" @click.stop="goBack">
                     <img src="https://meetmyavatarstatic.blob.core.windows.net/staticfiles/back-arrow.svg" alt="Back"
                         class="h-6 w-6 filter invert" />
                 </button>
@@ -24,14 +24,15 @@
                     <div v-if="shouldShowDateHeader(index)" class="date-header">
                         <span>{{ formatDateHeader(message.sentAt) }}</span>
                     </div>
-                    <div class="mb-4 flex" :class="{ 'text-right': message.sentFromUser || message.generatedByMyAvatar }">
+                    <div class="mb-4 flex"
+                        :class="{ 'text-right': message.sentFromUser || message.generatedByMyAvatar }">
                         <div class="flex-1 px-2">
                             <div :class="[
                                 message.sentFromUser || message.generatedByMyAvatar
                                     ? 'bg-blue-600 text-white'
                                     : (message.generatedBySenderAvatar ? 'bg-gray-700 text-gray-200' : 'bg-gray-700 text-gray-200')
                             ]" class="inline-block rounded-lg p-2 px-4 max-w-xs relative">
-                                <span>{{ message.content }}</span>
+                                <span v-html="formatContent(message.content)"></span>
                             </div>
                             <div class="pl-4">
                                 <small class="text-gray-400">{{ formatDate(message.sentAt) }}</small>
@@ -188,6 +189,16 @@ export default {
             const vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
         },
+
+        goToProfile() {
+            if (this.selectedConversation?.avatarUniqueId) {
+                this.$router.push({ name: 'AvatarProfile', params: { avatarUniqueId: this.selectedConversation.avatarUniqueId } });
+            }
+        },
+
+        formatContent(content) {
+            return content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
     },
     watch: {
         messages() {

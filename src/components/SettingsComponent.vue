@@ -10,7 +10,7 @@
         </header>
 
         <!-- Main Content -->
-        <main class="p-6">
+        <main class="p-6 relative">
             <!-- Profile Picture -->
             <div class="flex justify-center mb-6">
                 <img :src="user.profilePictureUrl || defaultProfilePicture" alt="Profile Picture"
@@ -23,7 +23,6 @@
                     <label for="displayName" class="block text-sm font-medium mb-1">Display Name</label>
                     <input id="displayName" type="text" v-model="displayName"
                         class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none" />
-                    <!-- Show validation error for displayName if present -->
                     <div v-if="validationErrors.displayName" class="text-red-400 text-xs mt-1">
                         {{ validationErrors.displayName }}
                     </div>
@@ -32,7 +31,6 @@
                     <label for="avatarId" class="block text-sm font-medium mb-1">Avatar ID</label>
                     <input id="avatarId" type="text" v-model="avatarId"
                         class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none" />
-                    <!-- Show validation error for unique avatar name if present -->
                     <div v-if="validationErrors.uniqueName" class="text-red-400 text-xs mt-1">
                         {{ validationErrors.uniqueName }}
                     </div>
@@ -42,18 +40,24 @@
                     <input id="email" type="email" :value="user.email" disabled
                         class="w-full p-2 bg-gray-600 text-gray-300 rounded cursor-not-allowed" />
                 </div>
-                <!-- New Global Prompt Textarea -->
-                <div>
+                <!-- Global Prompt Textarea with Mentions -->
+                <div class="relative">
                     <label for="globalPrompt" class="block text-sm font-medium mb-1">About this Avatar</label>
-                    <textarea id="globalPrompt" v-model="globalPrompt" rows="3"
-                        placeholder="Enter a brief description about your avatar. The Automatic replies will be based on this description."
+                    <textarea id="globalPrompt" v-model="globalPrompt" rows="3" @input="onGlobalPromptInput"
+                        placeholder="Enter a brief description about your avatar. Use @ to mention others."
                         class="w-full p-2 bg-gray-700 text-white rounded focus:outline-none"></textarea>
-                    <!-- Optionally, add validation error for globalPrompt if needed -->
+                    <!-- Mentions Dropdown -->
+                    <div v-if="mentionActive"
+                        class="absolute left-0 right-0 bg-gray-700 rounded shadow-lg mt-1 max-h-40 overflow-y-auto z-10">
+                        <div v-for="(name, index) in filteredMentions" :key="index" @click="selectMention(name)"
+                            class="p-2 hover:bg-gray-600 cursor-pointer">
+                            {{ name }}
+                        </div>
+                    </div>
                     <div v-if="validationErrors.globalPrompt" class="text-red-400 text-xs mt-1">
                         {{ validationErrors.globalPrompt }}
                     </div>
                 </div>
-
             </div>
 
             <!-- Buttons -->
@@ -81,27 +85,34 @@ export default {
         return {
             displayName: '',
             avatarId: '',
-            globalPrompt: '', // New field for the global prompt
-            defaultProfilePicture: 'https://meetmyavatarstatic.blob.core.windows.net/staticfiles/profile-default.svg'
+            globalPrompt: '',
+            defaultProfilePicture: 'https://meetmyavatarstatic.blob.core.windows.net/staticfiles/profile-default.svg',
+            // For mentions
+            mentionActive: false,
+            mentionQuery: '',
+            // In-memory list of usernames for testing
+            usernames: ['alice', 'bob', 'charlie', 'dave', 'eve']
         };
     },
     computed: {
-        // Get user info from the auth module.
         user() {
             return this.$store.getters['auth/user'] || {};
         },
-        // Get any validation errors from the settings store.
         validationErrors() {
             return this.$store.getters['settings/validationErrors'] || {};
+        },
+        filteredMentions() {
+            if (!this.mentionQuery) return this.usernames;
+            return this.usernames.filter(name =>
+                name.toLowerCase().includes(this.mentionQuery.toLowerCase())
+            );
         }
     },
     created() {
-        // Fetch the avatar profile when the page loads.
         this.$store.dispatch('settings/fetchAvatarProfile')
             .then(() => {
                 const profile = this.$store.getters['settings/avatarProfile'];
                 if (profile) {
-                    // Note: mapping API properties to component data.
                     this.displayName = profile.avatarName;
                     this.avatarId = profile.uniqueAvatarId;
                     this.globalPrompt = profile.globalPrompt || '';
@@ -116,14 +127,12 @@ export default {
             this.$router.push({ name: 'MessengerList' });
         },
         async saveSettings() {
-            // Dispatch the update action from the settings store.
             try {
                 const updatedProfile = await this.$store.dispatch('settings/updateAvatarProfile', {
                     avatarName: this.displayName,
                     uniqueAvatarId: this.avatarId,
-                    globalPrompt: this.globalPrompt  // Include globalPrompt in the payload
+                    globalPrompt: this.globalPrompt
                 });
-                // Optionally update local fields with the updated profile.
                 this.displayName = updatedProfile.avatarName;
                 this.avatarId = updatedProfile.uniqueAvatarId;
                 this.globalPrompt = updatedProfile.globalPrompt || '';
@@ -138,9 +147,28 @@ export default {
         },
         deleteAccount() {
             if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                // Implement account deletion logic here.
                 console.log('Account deleted');
             }
+        },
+        onGlobalPromptInput(event) {
+            const value = event.target.value;
+            // Update the globalPrompt
+            this.globalPrompt = value;
+            // Look for the last occurrence of "@" followed by word characters
+            const match = value.match(/@(\w*)$/);
+            if (match) {
+                this.mentionActive = true;
+                this.mentionQuery = match[1];
+            } else {
+                this.mentionActive = false;
+                this.mentionQuery = '';
+            }
+        },
+        selectMention(username) {
+            // Replace the last "@" mention with the selected username followed by a space.
+            this.globalPrompt = this.globalPrompt.replace(/@\w*$/, `@${username} `);
+            this.mentionActive = false;
+            this.mentionQuery = '';
         }
     }
 };
